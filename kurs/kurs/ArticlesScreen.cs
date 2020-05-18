@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +17,12 @@ namespace kurs
         private OracleConnection con;
         private DataSet articleSet;
         private OracleDataAdapter selectArticle;
+        private StreamWriter sv;
 
-        public ArticlesScreen(OracleConnection conn)
+        public ArticlesScreen(OracleConnection conn, StreamWriter svv)
         {
             this.con = conn;
+            this.sv = svv;
             InitializeComponent();
             Show_Articles();
         }
@@ -85,6 +88,8 @@ namespace kurs
             try
             {
                 cmd1.ExecuteNonQuery();
+                sv.WriteLine("Article with id " + IdArt.Text + " delete");
+                sv.Flush();
                 MessageBox.Show("Запись удалена!");
                 IdArt.Text = "";
                 Show_Articles();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,11 +14,13 @@ namespace kurs
 {
     public partial class MainForm : Form
     {
-        OracleConnection con = new OracleConnection();
-
+        private OracleConnection con = new OracleConnection();
+        private StreamWriter sv;
         public MainForm()
         {
             InitializeComponent();
+            sv = new StreamWriter("log.txt");
+            
         }
 
         private void connectDatabaseButton_Click(object sender, EventArgs e)
@@ -41,7 +44,7 @@ namespace kurs
                 if (result!=0)
                 {
                 
-                    UserScreen userScreen = new UserScreen(con);
+                    UserScreen userScreen = new UserScreen(con, sv);
 
                     MessageBox.Show("Вход выполнен!");
                     userScreen.Show();
@@ -52,7 +55,7 @@ namespace kurs
                 }
 
             }
-            catch (OracleException exc)
+            catch (Exception exc)
             {
                 MessageBox.Show(exc.ToString());
             }

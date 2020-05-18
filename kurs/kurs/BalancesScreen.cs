@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +17,12 @@ namespace kurs
         private OracleConnection con;
         private DataSet balanceSet;
         private OracleDataAdapter selectBalance;
+        private StreamWriter sv;
 
-        public BalancesScreen(OracleConnection conn)
+        public BalancesScreen(OracleConnection conn, StreamWriter svv)
         {
             this.con = conn;
+            this.sv = svv;
             InitializeComponent();
             Show_Balances();
         }
@@ -45,6 +48,8 @@ namespace kurs
             try
             {
                 cmd1.ExecuteNonQuery();
+                sv.WriteLine("Balance from "+ beginDate.Text+" to "+ endDate.Text+" create");
+                sv.Flush();
                 MessageBox.Show("Баланс создан!");
                 beginDate.Text = "";
                 endDate.Text = "";
@@ -55,8 +60,8 @@ namespace kurs
                 MessageBox.Show(exc.ToString());
             }
         }
-
         private void delBalance_Click(object sender, EventArgs e)
+
         {
             var cmd1 = new OracleCommand("deleteBalance", con);
             cmd1.CommandType = System.Data.CommandType.StoredProcedure;
@@ -64,6 +69,8 @@ namespace kurs
             try
             {
                 cmd1.ExecuteNonQuery();
+                sv.WriteLine("Balance with id " + number.Text + " delete");
+
                 MessageBox.Show("Баланс удалён!");
                 number.Text = "";
                 Show_Balances();
